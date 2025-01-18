@@ -1,4 +1,3 @@
 class Idea:
-    def __init__(self, id, content):
-        self.id = id
+    def __init__(self, content):
         self.content = content

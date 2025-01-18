@@ -8,7 +8,7 @@ class MiniFrame(customtkinter.CTkFrame):
         self.label_visible = True  # État pour savoir si le label est affiché
 
         # Créer le label
-        self.label = customtkinter.CTkLabel(self, text=f"ID: {idea.id} - Content: {idea.content}")
+        self.label = customtkinter.CTkLabel(self, text=f"Content: {idea.content}")
         self.label.grid(row=0, column=0, padx=20)
 
         # Créer la textbox (initialement masquée)
@@ -33,7 +33,7 @@ class MiniFrame(customtkinter.CTkFrame):
             # Masquer la textbox, afficher le label, et mettre à jour le texte
             new_idea = self.textbox.get()  # Récupérer le contenu de la textbox
             self.idea.content = new_idea  # Mettre à jour l'objet
-            self.label.configure(text=f"ID: {self.idea.id} - Content: {new_idea}")
+            self.label.configure(text=f"Content: {new_idea}")
             self.textbox.grid_remove()
             self.label.grid()
 

@@ -26,7 +26,6 @@ class App(customtkinter.CTk):
 
        
 
-# start app
 if __name__ == "__main__":
     app = App()
     app.mainloop()
