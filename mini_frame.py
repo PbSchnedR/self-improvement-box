@@ -1,11 +1,14 @@
 import customtkinter
+from models import Idea
+from models import Ideas
 
 class MiniFrame(customtkinter.CTkFrame):
-    def __init__(self, master, idea, **kwargs):
+    def __init__(self, master, idea, on_erase, **kwargs):
         super().__init__(master, **kwargs)
 
         self.idea = idea  # Stocker l'objet pour un accès ultérieur
         self.label_visible = True  # État pour savoir si le label est affiché
+        self.on_erase = on_erase  # Callback pour notifier ContentFrame
 
         # Créer le label
         self.label = customtkinter.CTkLabel(self, text=f"Content: {idea.content}")
@@ -19,6 +22,9 @@ class MiniFrame(customtkinter.CTkFrame):
         # Bouton pour basculer entre label et textbox
         self.modify_btn = customtkinter.CTkButton(self, text="Modify", command=self.toggle_view)
         self.modify_btn.grid(row=2, column=0, padx=20)
+
+        self.erase_btn = customtkinter.CTkButton(self, text="Erase Idea", command= self.erase)
+        self.erase_btn.grid(row=4, column=0, padx=20)
 
     def toggle_view(self):
         """
@@ -39,3 +45,9 @@ class MiniFrame(customtkinter.CTkFrame):
 
         # Inverser l'état
         self.label_visible = not self.label_visible
+
+    def erase(self):
+        target = Ideas.index(self.idea)
+        Ideas.pop(target)
+        if self.on_erase:
+            self.on_erase()
