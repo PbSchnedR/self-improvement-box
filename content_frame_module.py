@@ -2,7 +2,7 @@ import customtkinter
 from mini_frame import MiniFrame
 from models import Idea
 from models import Ideas
-from menus_hub import Mini_frames_container
+from menus_hub import Mini_frames_container , Goals_container
 
 class ContentFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -24,8 +24,7 @@ class ContentFrame(customtkinter.CTkFrame):
         self.add_btn.grid(row=2, column=0, padx=20)
 
         # Frame pour l'autre option
-        self.other_frame_label = customtkinter.CTkLabel(self, text="Autre option")
-        self.other_frame_label.grid(row=5, column=0, sticky="n", padx=10, pady=10)
+        self.goals_frame = Goals_container(master= self)
 
         self.update_visible_frame()
 
@@ -49,8 +48,8 @@ class ContentFrame(customtkinter.CTkFrame):
         if context == "idea_box":
             self.mini_frames_container.grid(row=0, column=0, sticky="n", padx=10, pady=10)
             self.add_btn.grid(row=2, column=0, padx=20)
-        elif context == "other":
-            self.other_frame_label.grid(row=5, column=0, sticky="n", padx=10, pady=10)
+        elif context == "goals":
+            self.goals_frame.grid(row=5, column=0, sticky="n", padx=10, pady=10)
 
     def update_on_context_change(self):
         """Mettre à jour la visibilité des frames lorsque le contexte change"""

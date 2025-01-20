@@ -1,4 +1,5 @@
 import customtkinter
+import datetime
 from models import Ideas, Idea
 from mini_frame import MiniFrame
 
@@ -40,5 +41,12 @@ class Mini_frames_container(customtkinter.CTkFrame):
             self.cancel_btn = customtkinter.CTkButton(new_idea_popup, text="Cancel", command=new_idea_popup.destroy)
             self.cancel_btn.grid(row=4, column=0, padx=20)
 
+class Goals_container(customtkinter.CTkFrame):
+    def __init__(self, master,**kwargs):
+        super().__init__(master, **kwargs)
+
+        x = datetime.datetime.now()
+        self.label = customtkinter.CTkLabel(self, text= "Objectif ajouté le : " + x.strftime("%d-%m-%Y"))
+        self.label.grid(row=2, column=0, padx=20)
 
         

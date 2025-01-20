@@ -7,11 +7,11 @@ class MenuFrame(customtkinter.CTkFrame):
 
         self.menu_context = "idea_box"  # Contexte initial
 
-        self.nav_btn = customtkinter.CTkButton(self, text="Boîte à idées", command=self.change_to_idea_box)
-        self.nav_btn.grid(row=0, column=0, padx=20, pady=20)
+        self.idea_btn = customtkinter.CTkButton(self, text="Boîte à idées", command=self.change_to_idea_box)
+        self.idea_btn.grid(row=0, column=0, padx=20, pady=20)
 
-        self.another_btn = customtkinter.CTkButton(self, text="Autre option", command=self.change_to_other)
-        self.another_btn.grid(row=1, column=0, padx=20, pady=20)
+        self.goals_btn = customtkinter.CTkButton(self, text="Répertoire des objectifs", command=self.change_to_goals)
+        self.goals_btn.grid(row=1, column=0, padx=20, pady=20)
 
         # Configurer la grille du MenuFrame
         self.grid_rowconfigure((0, 1), weight=1)
@@ -20,8 +20,8 @@ class MenuFrame(customtkinter.CTkFrame):
         self.menu_context = "idea_box"
         self.notify_content_frame()
 
-    def change_to_other(self):
-        self.menu_context = "other"
+    def change_to_goals(self):
+        self.menu_context = "goals"
         self.notify_content_frame()
 
     def notify_content_frame(self):
