@@ -2,6 +2,7 @@ import customtkinter
 from mini_frame import MiniFrame
 from models import Idea
 from models import Ideas
+from menus_hub import Mini_frames_container
 
 class ContentFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -9,16 +10,17 @@ class ContentFrame(customtkinter.CTkFrame):
 
         # La référence à menu_frame sera définie après la création de l'objet
         self.menu_frame = None  # Placeholder, nous le définirons après
-        self.mini_frames_container = customtkinter.CTkFrame(self, corner_radius=10)
+        self.mini_frames_container = Mini_frames_container(master=self)
         self.mini_frames_container.grid(row=0, column=0, sticky="n", padx=10, pady=10)
         self.mini_frames_container.grid_rowconfigure(0, weight=1)
 
         self.mini_frames_container.grid_rowconfigure(len(Ideas), weight=1)  # Dynamique selon les MiniFrames
         self.mini_frames_container.grid_columnconfigure(0, weight=1)
 
-        self.update_frames()
+        self.mini_frames_container.update_frames()
 
-        self.add_btn = customtkinter.CTkButton(self, text="Add a new idea", command=self.popup)
+
+        self.add_btn = customtkinter.CTkButton(self, text="Add a new idea", command=self.mini_frames_container.popup)
         self.add_btn.grid(row=2, column=0, padx=20)
 
         # Frame pour l'autre option
@@ -54,35 +56,4 @@ class ContentFrame(customtkinter.CTkFrame):
         """Mettre à jour la visibilité des frames lorsque le contexte change"""
         self.update_visible_frame()
 
-    def update_frames(self):
-        """Mettre à jour les MiniFrames à partir des données"""
-        for widget in self.mini_frames_container.winfo_children():
-            widget.destroy()  # Supprimer les widgets existants
-
-        for index, idea in enumerate(Ideas):
-            mini_frame = MiniFrame(master=self.mini_frames_container, idea=idea, on_erase=self.update_frames)
-            mini_frame.grid(row=index, column=0, padx=10, pady=5, sticky="ew")
-
-    def popup(self):
-        new_idea_popup = customtkinter.CTkToplevel()
-        new_idea_popup.geometry("300x200")
-        new_idea_popup.title("Input Popup")
-        new_idea_popup.grab_set()
-
-        self.entry = customtkinter.CTkEntry(new_idea_popup, width=200)
-        self.entry.grid(row=0, column=0, padx=20)
-
-        def on_submit():
-            data = Idea(self.entry.get())
-            if data.content == "":
-                new_idea_popup.destroy()
-            else:
-                Ideas.append(data)
-                self.update_frames()
-                new_idea_popup.destroy()
-
-        self.confirm_btn = customtkinter.CTkButton(new_idea_popup, text="Insert", command=on_submit)
-        self.confirm_btn.grid(row=2, column=0, padx=20)
-
-        self.cancel_btn = customtkinter.CTkButton(new_idea_popup, text="Cancel", command=new_idea_popup.destroy)
-        self.cancel_btn.grid(row=4, column=0, padx=20)
+    
