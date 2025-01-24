@@ -25,6 +25,9 @@ class ContentFrame(customtkinter.CTkFrame):
 
         # Frame pour l'autre option
         self.goals_frame = Goals_container(master= self)
+        self.goals_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
+
+        self.goals_frame.update_frames()
 
         self.update_visible_frame()
 

@@ -20,7 +20,7 @@ class MiniFrame(customtkinter.CTkFrame):
         self.textbox.grid_remove()  # Masquer la textbox au départ
 
         # Bouton pour basculer entre label et textbox
-        self.modify_btn = customtkinter.CTkButton(self, text="Modify", command=self.toggle_view)
+        self.modify_btn = customtkinter.CTkButton(self, text="Modifier", command=self.toggle_view)
         self.modify_btn.grid(row=2, column=0, padx=20)
 
         self.erase_btn = customtkinter.CTkButton(self, text="Erase Idea", command= self.erase)
@@ -35,6 +35,7 @@ class MiniFrame(customtkinter.CTkFrame):
             self.label.grid_remove()
             self.textbox.grid()
             self.textbox.insert(0, self.idea.content)  # Pré-remplir avec le nom actuel
+            self.modify_btn.configure(text = "Appliquer")
         else:
             # Masquer la textbox, afficher le label, et mettre à jour le texte
             new_idea = self.textbox.get()  # Récupérer le contenu de la textbox
@@ -42,6 +43,8 @@ class MiniFrame(customtkinter.CTkFrame):
             self.label.configure(text=f"Content: {new_idea}")
             self.textbox.grid_remove()
             self.label.grid()
+            self.modify_btn.configure(text = "Modifer")
+
 
         # Inverser l'état
         self.label_visible = not self.label_visible
