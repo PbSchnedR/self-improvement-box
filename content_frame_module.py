@@ -13,20 +13,13 @@ class ContentFrame(customtkinter.CTkFrame):
         self.mini_frames_container = Mini_frames_container(master=self)
         self.mini_frames_container.grid(row=0, column=0, sticky="n", padx=10, pady=10)
         self.mini_frames_container.grid_rowconfigure(0, weight=1)
-
         self.mini_frames_container.grid_rowconfigure(len(Ideas), weight=1)  # Dynamique selon les MiniFrames
         self.mini_frames_container.grid_columnconfigure(0, weight=1)
-
         self.mini_frames_container.update_frames()
-
-
-        self.add_btn = customtkinter.CTkButton(self, text="Add a new idea", command=self.mini_frames_container.popup)
-        self.add_btn.grid(row=2, column=0, padx=20)
-
+       
         # Frame pour l'autre option
         self.goals_frame = Goals_container(master= self)
         self.goals_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
-
         self.goals_frame.update_frames()
 
         self.update_visible_frame()
@@ -50,7 +43,6 @@ class ContentFrame(customtkinter.CTkFrame):
         # Montrer la frame "Boîte à idées" ou "Autre option" en fonction du contexte
         if context == "idea_box":
             self.mini_frames_container.grid(row=0, column=0, sticky="n", padx=10, pady=10)
-            self.add_btn.grid(row=2, column=0, padx=20)
         elif context == "goals":
             self.goals_frame.grid(row=5, column=0, sticky="n", padx=10, pady=10)
 
