@@ -29,13 +29,13 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
             self.checkboxes.append(checkbox)  # Ajouter chaque checkbox à la liste
             self.trash_button = customtkinter.CTkButton(self, text="🗑", command= erase_item)
             self.trash_button.grid(row=index + 4, column=1)
-
+        
+        self.add_btn = customtkinter.CTkButton(self, text="Ajouter un objectif", command=self.popup_mini)
+        self.add_btn.grid(row=3, column=1, padx=10, pady=5)
             
 
-
         for index, goal_items in enumerate(goal.items):
-            self.add_btn = customtkinter.CTkButton(self, text="Ajouter un objectif", command=self.popup_mini)
-            self.add_btn.grid(row=3, column=1, padx=10, pady=5)
+            
             textbox = customtkinter.CTkEntry(self, width=200)
             textbox.grid(row=index + 5, column=0, padx=10, pady=5, sticky="ew")  # Place la textbox à une colonne différente
             textbox.grid_remove()  # Masquer la textbox par défaut
