@@ -118,3 +118,40 @@ class Goal:
         query = "DELETE FROM goals WHERE id = %s"
         db.execute_query(query, (self.id,))
         db.close()
+
+
+
+class Quote:
+    def __init__(self, content, quote_id=None):
+        self.id = quote_id
+        self.content = content
+
+    def save(self):
+        """Sauvegarde l'idée dans la base de données."""
+        db = Database()
+        if self.id:
+            # Mettre à jour une idée existante
+            query = "UPDATE quotes SET content = %s WHERE id = %s"
+            db.execute_query(query, (self.content, self.id))
+        else:
+            # Insérer une nouvelle idée
+            query = "INSERT INTO quotes (content) VALUES (%s)"
+            db.execute_query(query, (self.content,))
+            self.id = db.cursor.lastrowid  # Récupérer l'ID généré
+        db.close()
+
+    @staticmethod
+    def get_all():
+        """Récupère toutes les idées depuis la base de données."""
+        db = Database()
+        query = "SELECT id, content FROM quotes"
+        results = db.fetch_all(query)
+        db.close()
+        return [Quote(content, idea_id) for (idea_id, content) in results]
+
+    def delete(self):
+        """Supprime l'idée de la base de données."""
+        db = Database()
+        query = "DELETE FROM quotes WHERE id = %s"
+        db.execute_query(query, (self.id,))
+        db.close()

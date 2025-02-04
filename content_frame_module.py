@@ -1,6 +1,7 @@
 import customtkinter
 from mini_frame import MiniFrame
-from menus_hub import Mini_frames_container, Goals_container
+from menus_hub import Mini_frames_container, Goals_container, Quote_frames_container
+
 
 class ContentFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -21,8 +22,14 @@ class ContentFrame(customtkinter.CTkFrame):
         self.goals_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
         self.goals_frame.update_frames()  # Charger les objectifs depuis la base de données
 
+        # Créer Quote_frames_container pour afficher les citations
+        self.quote_frame = Quote_frames_container(master=self)
+        self.quote_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
+        self.quote_frame.update_frames()  # Charger les citations depuis la base de données
+
         # Masquer les frames par défaut
         self.update_visible_frame()
+
 
     def set_menu_frame(self, menu_frame):
         """Méthode pour lier menu_frame après la création de ContentFrame"""
@@ -47,6 +54,10 @@ class ContentFrame(customtkinter.CTkFrame):
         elif context == "goals":
             self.goals_frame.update_frames()  # Recharger les objectifs depuis la base de données
             self.goals_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
+        elif context == "quote":
+            self.quote_frame.update_frames()  # Recharger les citations depuis la base de données
+            self.quote_frame.grid(row=0, column=0, sticky="n", padx=10, pady=10)
+
 
     def update_on_context_change(self):
         """Mettre à jour la visibilité des frames lorsque le contexte change"""

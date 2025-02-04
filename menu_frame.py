@@ -13,6 +13,10 @@ class MenuFrame(customtkinter.CTkFrame):
         self.goals_btn = customtkinter.CTkButton(self, text="Répertoire des objectifs", command=self.change_to_goals)
         self.goals_btn.grid(row=1, column=0, padx=20, pady=20)
 
+        self.quote_btn = customtkinter.CTkButton(self, text="Répertoire des citations", command=self.change_to_quote)
+        self.quote_btn.grid(row=2, column=0, padx=20, pady=20)
+
+
         # Configurer la grille du MenuFrame
         self.grid_rowconfigure((0, 1), weight=1)
 
@@ -24,7 +28,12 @@ class MenuFrame(customtkinter.CTkFrame):
         self.menu_context = "goals"
         self.notify_content_frame()
 
+    def change_to_quote(self):
+        self.menu_context = "quote"
+        self.notify_content_frame()
+
     def notify_content_frame(self):
         if self.content_frame:
+
             self.content_frame.update_on_context_change()
 
