@@ -1,7 +1,8 @@
 import customtkinter
-from models import Ideas, Idea, Goal, Goals
+from models import Idea, Goal
 from mini_frame import MiniFrame
 from goal_mini_frame import Goal_MiniFrame
+import datetime
 
 class Mini_frames_container(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -14,7 +15,7 @@ class Mini_frames_container(customtkinter.CTkFrame):
             widget.destroy()
 
         # Charger les idées depuis la base de données
-        ideas = Ideas.get_all()  # Récupérer les idées depuis la base de données
+        ideas = Idea.get_all()  # Récupérer les idées depuis la base de données
         for index, idea in enumerate(ideas):
             mini_frame = MiniFrame(master=self, idea=idea, on_erase=self.update_frames)
             mini_frame.grid(row=index, column=0, padx=10, pady=5, sticky="ew")
@@ -57,14 +58,17 @@ class Goals_container(customtkinter.CTkFrame):
         for widget in self.winfo_children():
             widget.destroy()  # Supprimer les widgets existants
 
-        for index, goal in enumerate(Goals):
-            mini_frame = Goal_MiniFrame(master=self, goal=goal, on_erase= self.update_frames, on_add=self.update_frames, on_erase_line= self.update_frames)
-            mini_frame.grid(row=index, column=0, padx=10, pady=5, sticky="ew")
+        goals = Goal.get_all()
+        for index, goal in enumerate(goals):
+            creation_date = datetime.datetime.now()
+            self.mini_frame = Goal_MiniFrame(master=self, goal=goal, on_erase= self.update_frames, on_add=self.update_frames, on_erase_line= self.update_frames, date=creation_date)
+            self.mini_frame.grid(row=index, column=0, padx=10, pady=5, sticky="ew")
 
         self.add_btn = customtkinter.CTkButton(self, text="Ajouter une liste d'objectifs", command= self.add_goal_list)
         self.add_btn.grid(row=2, column=1, padx=20)
 
     def add_goal_list(self):
-         new_goal = Goal("29-09-2006", ["Définir vos objectifs ici"])
-         Goals.append(new_goal)
+         today =  datetime.datetime.now()
+         new_goal = Goal( today, ["Définir vos objectifs ici"])
+         new_goal.save()
          self.update_frames()

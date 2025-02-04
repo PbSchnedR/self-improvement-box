@@ -1,9 +1,8 @@
 import customtkinter
 import datetime
-from models import Goals
 
 class Goal_MiniFrame(customtkinter.CTkFrame):
-    def __init__(self, master, goal, on_erase, on_add, on_erase_line, **kwargs):
+    def __init__(self, master, goal, on_erase, on_add, on_erase_line, date, **kwargs):
         super().__init__(master, **kwargs)
 
         self.goal = goal  # Stocker l'objet pour un accès ultérieur
@@ -13,14 +12,17 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
         self.on_erase = on_erase
         self.on_add = on_add
         self.on_erase_line = on_erase_line
+        self.date = date
 
-        creation_date = datetime.datetime.now()
-        self.date_label = customtkinter.CTkLabel(self, text= "Objectif ajouté le : " + creation_date.strftime("%d-%m-%Y"))
+        self.date_label = customtkinter.CTkLabel(self, text= "Objectif ajouté le : " + self.date.strftime("%d-%m-%Y"))
         self.date_label.grid(row=0, column=0, padx=20)
 
         for index, goal_items in enumerate(goal.items):
             def erase_item(index = index):
+                # Supprimer l'item de la liste en mémoire
                 goal.items.pop(index)
+                # Sauvegarder les modifications dans la base de données
+                goal.save()
                 if self.on_add:
                     self.on_add()
                 
@@ -66,6 +68,7 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
             for index, textbox in enumerate(self.textboxes):
                 new_goal = textbox.get()  # Récupérer le contenu de la textbox
                 self.goal.items[index] = new_goal  # Mettre à jour l'objet avec le nouveau texte
+                self.goal.save()
                 self.checkboxes[index].configure(text=new_goal)  # Mettre à jour le texte de la checkbox
                 textbox.grid_remove()  # Masquer la textbox
                 self.add_btn.grid_remove()
@@ -76,9 +79,9 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
         self.check_visible = not self.check_visible
 
 
+
     def erase(self):
-        target = Goals.index(self.goal)
-        Goals.pop(target)
+        self.goal.delete()
         if self.on_erase:
             self.on_erase()
 
@@ -88,23 +91,21 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
         new_goal_popup.title("Input Popup")
         new_goal_popup.grab_set()
 
-        target_index = Goals.index(self.goal)
-        target = Goals[target_index]
-
         self.entry = customtkinter.CTkEntry(new_goal_popup, width=200)
         self.entry.grid(row=0, column=0, padx=20)
 
-        # Déclarez la fonction on_submit ici, avant de l'utiliser
         def on_submit():
             data = self.entry.get()
             if data == "":
                 new_goal_popup.destroy()
             else:
-                target.items.append(data)
+                # Ajouter le nouvel item directement à la liste des items du goal actuel
+                self.goal.items.append(data)
+                # Sauvegarder les modifications dans la base de données
+                self.goal.save()
                 new_goal_popup.destroy()
                 if self.on_add:
                     self.on_add()
 
-        # Ensuite, configurez le bouton avec la fonction
         self.confirm_btn = customtkinter.CTkButton(new_goal_popup, text="Insert", command=on_submit)
         self.confirm_btn.grid(row=2, column=0, padx=20)

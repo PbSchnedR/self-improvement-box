@@ -1,6 +1,5 @@
 import customtkinter
 from mini_frame import MiniFrame
-from models import Idea, Ideas
 from menus_hub import Mini_frames_container, Goals_container
 
 class ContentFrame(customtkinter.CTkFrame):
@@ -8,7 +7,7 @@ class ContentFrame(customtkinter.CTkFrame):
         super().__init__(master, **kwargs)
 
         # La référence à menu_frame sera définie après la création de l'objet
-        self.menu_frame = None  # Placeholder, nous le définirons après
+        self.menu_frame = None  
 
         # Créer Mini_frames_container pour afficher les idées
         self.mini_frames_container = Mini_frames_container(master=self)

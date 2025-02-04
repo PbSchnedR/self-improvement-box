@@ -8,7 +8,7 @@ class Database:
             password="m$0SPl666*hi4nte",
             database="selfi_box"
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(buffered=True)  # Curseur bufferisé
 
     def execute_query(self, query, params=None):
         """Exécute une requête SQL."""
@@ -21,6 +21,14 @@ class Database:
         return self.cursor.fetchall()
 
     def close(self):
-        """Ferme la connexion à la base de données."""
-        self.cursor.close()
-        self.connection.close()
+        if self.cursor:
+            try:
+                # Lire tous les résultats non lus
+                self.cursor.fetchall()
+            except mysql.connector.errors.InterfaceError:
+                # Pas de résultats à lire
+                pass
+            finally:
+                self.cursor.close()
+        if self.connection:
+            self.connection.close()
