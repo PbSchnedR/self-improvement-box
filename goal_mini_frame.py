@@ -17,7 +17,7 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
         self.date_label = customtkinter.CTkLabel(self, text= "Objectif ajouté le : " + self.date.strftime("%d-%m-%Y"))
         self.date_label.grid(row=0, column=0, padx=20)
 
-        for index, goal_items in enumerate(goal.items):
+        for index, (goal_item, is_ticked) in enumerate(goal.items):
             def erase_item(index = index):
                 # Supprimer l'item de la liste en mémoire
                 goal.items.pop(index)
@@ -25,60 +25,69 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
                 goal.save()
                 if self.on_add:
                     self.on_add()
+
+            def on_checkbox_click(index=index):
+                # Mettre à jour l'état dans la liste des items
+                item_text, _ = self.goal.items[index]
+                self.goal.items[index] = (item_text, self.checkboxes[index].get())
+                # Sauvegarder dans la base de données
+                self.goal.save()
                 
-            checkbox = customtkinter.CTkCheckBox(self, text=goal_items)
+            checkbox = customtkinter.CTkCheckBox(self, text=goal_item, command=lambda i=index: on_checkbox_click(i))
             checkbox.grid(row=index + 4, column=0, padx=10, pady=5, sticky="ew")
-            self.checkboxes.append(checkbox)  # Ajouter chaque checkbox à la liste
-            self.trash_button = customtkinter.CTkButton(self, text="🗑", command= erase_item)
+            # Définir l'état initial de la checkbox
+            if is_ticked:
+                checkbox.select()
+            else:
+                checkbox.deselect()
+            self.checkboxes.append(checkbox)
+            
+            self.trash_button = customtkinter.CTkButton(self, text="🗑", command=lambda i=index: erase_item(i))
             self.trash_button.grid(row=index + 4, column=1)
         
         self.add_btn = customtkinter.CTkButton(self, text="Ajouter un objectif", command=self.popup_mini)
         self.add_btn.grid(row=3, column=1, padx=10, pady=5)
             
 
-        for index, goal_items in enumerate(goal.items):
-            
+        for index, (goal_item, _) in enumerate(goal.items):
             textbox = customtkinter.CTkEntry(self, width=200)
-            textbox.grid(row=index + 5, column=0, padx=10, pady=5, sticky="ew")  # Place la textbox à une colonne différente
-            textbox.grid_remove()  # Masquer la textbox par défaut
-            self.textboxes.append(textbox)  # Ajouter chaque textbox à la liste
+            textbox.grid(row=index + 5, column=0, padx=10, pady=5, sticky="ew")
+            textbox.grid_remove()
+            self.textboxes.append(textbox)
 
 
         # Bouton pour basculer entre label et textbox
         self.modify_btn = customtkinter.CTkButton(self, text="Modifier", command=self.toggle_view)
         self.modify_btn.grid(row=1, column=0, padx=20)
 
-        self.erase_btn = customtkinter.CTkButton(self, text="Effacer les objectifs", command= self.erase)
+        self.erase_btn = customtkinter.CTkButton(self, text="Effacer les objectifs", command=self.erase)
         self.erase_btn.grid(row=3, column=0, padx=20)
 
     def toggle_view(self):
         if self.check_visible:
-            # Masquer toutes les checkboxes et afficher les textboxes
-            self.modify_btn.configure(text = "Appliquer")
+            self.modify_btn.configure(text="Appliquer")
             for checkbox in self.checkboxes:
-                checkbox.grid_remove()  # Masquer chaque checkbox
+                checkbox.grid_remove()
             for index, textbox in enumerate(self.textboxes):
-                textbox.grid()  # Afficher chaque textbox
-                textbox.delete(0, "end")  # Effacer tout texte précédent
-                textbox.insert(0, self.goal.items[index])  # Pré-remplir avec l'item actuel
+                textbox.grid()
+                textbox.delete(0, "end")
+                textbox.insert(0, self.goal.items[index][0])  # Insérer seulement le texte, pas l'état
                 self.add_btn.grid()
         else:
-            # Masquer toutes les textboxes et afficher les checkboxes
-            self.modify_btn.configure(text = "Modifier")
+            self.modify_btn.configure(text="Modifier")
             for index, textbox in enumerate(self.textboxes):
-                new_goal = textbox.get()  # Récupérer le contenu de la textbox
-                self.goal.items[index] = new_goal  # Mettre à jour l'objet avec le nouveau texte
+                new_text = textbox.get()
+                # Conserver l'état de la checkbox en mettant à jour seulement le texte
+                _, is_ticked = self.goal.items[index]
+                self.goal.items[index] = (new_text, is_ticked)
                 self.goal.save()
-                self.checkboxes[index].configure(text=new_goal)  # Mettre à jour le texte de la checkbox
-                textbox.grid_remove()  # Masquer la textbox
+                self.checkboxes[index].configure(text=new_text)
+                textbox.grid_remove()
                 self.add_btn.grid_remove()
             for checkbox in self.checkboxes:
-                checkbox.grid()  # Réafficher chaque checkbox
+                checkbox.grid()
 
-        # Inverser l'état
         self.check_visible = not self.check_visible
-
-
 
     def erase(self):
         self.goal.delete()
@@ -99,9 +108,8 @@ class Goal_MiniFrame(customtkinter.CTkFrame):
             if data == "":
                 new_goal_popup.destroy()
             else:
-                # Ajouter le nouvel item directement à la liste des items du goal actuel
-                self.goal.items.append(data)
-                # Sauvegarder les modifications dans la base de données
+                # Ajouter le nouvel item avec l'état non coché par défaut
+                self.goal.items.append((data, False))
                 self.goal.save()
                 new_goal_popup.destroy()
                 if self.on_add:
